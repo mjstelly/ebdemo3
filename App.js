@@ -38,7 +38,13 @@ const Item = ({ title, func }) => {
     </View>
   );
 };
-
+/**
+ * The intent with the Note component was to have it toggle on below the FlatList when the user
+ * clicked a list item. Then use the onPress to submit to the dummy endpoint.
+ * At this time, the provided API endpoint returns an empty object with no documentation on how
+ * to use it. https://jsonplaceholder.typicode.com/guide.html
+ *
+ */
 const Note = () => (
   <View flex={1}>
     <TextInput backgroundColor="cyan" multiline numberOfLines={20} editable />
@@ -52,26 +58,33 @@ const App = () => {
     setToggle(!toggle);
   };
 
-  const [repoData, setRepoData] = useState([]);
+  /**
+   * Work in progress
+   * Using axios api to access github rest. I successfully retrieved the data.
+   * The next step would be to reshape the data to pass to the FlatList
+   */
+  // const [repoData, setRepoData] = useState([]);
 
-  const callApi = async () => {
-    const response = await axios.get(URL);
-    const data = response.data;
-    setRepoData(data);
-  };
+  // const callApi = async () => {
+  //   const response = await axios.get(URL);
+  //   const data = response.data;
+  //   setRepoData(data);
+  // };
 
-  useEffect(() => {
-    callApi();
-  }, []);
+  // useEffect(() => {
+  //   callApi();
+  // }, []);
 
   const renderItem = ({ item }) => (
+    //TODO: Need to debug toggle. No error but doesn't toggle.
     <Item title={item.title} onPress={toggleFunction} />
   );
 
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={repoData}
+        // data={repoData}
+        data={DATA}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
       />
