@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   SafeAreaView,
   View,
@@ -10,6 +10,9 @@ import {
   StatusBar,
   Button,
 } from "react-native";
+import axios from "axios";
+
+const URL = "https://api.github.com/users/mjstelly/repos";
 
 const DATA = [
   {
@@ -26,35 +29,53 @@ const DATA = [
   },
 ];
 
-const Item = ({ title }) => (
-  <View style={styles.item}>
-    <TouchableOpacity>
-      <Text style={styles.title}>{title}</Text>
-    </TouchableOpacity>
-  </View>
-);
+const Item = ({ title, func }) => {
+  return (
+    <View style={styles.item}>
+      <TouchableOpacity>
+        <Text style={styles.title}>{title}</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
 
 const Note = () => (
-  <View>
-    <TextInput multiline numberOfLines={4} />
-    <Button
-      title="Submit"
-      onPress={() => Alert.alert("Simple Button pressed")}
-    />
+  <View flex={1}>
+    <TextInput backgroundColor="cyan" multiline numberOfLines={20} editable />
+    <Button title="Submit" onPress={() => {}} />
   </View>
 );
 
 const App = () => {
-  const renderItem = ({ item }) => <Item title={item.title} />;
+  const [toggle, setToggle] = useState(false);
+  const toggleFunction = () => {
+    setToggle(!toggle);
+  };
+
+  const [repoData, setRepoData] = useState([]);
+
+  const callApi = async () => {
+    const response = await axios.get(URL);
+    const data = response.data;
+    setRepoData(data);
+  };
+
+  useEffect(() => {
+    callApi();
+  }, []);
+
+  const renderItem = ({ item }) => (
+    <Item title={item.title} onPress={toggleFunction} />
+  );
 
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={DATA}
+        data={repoData}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
       />
-      <Note />
+      {toggle && <Note />}
     </SafeAreaView>
   );
 };
